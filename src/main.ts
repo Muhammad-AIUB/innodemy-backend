@@ -49,8 +49,20 @@ async function bootstrap() {
 
   // ─── HELMET SECURITY HEADERS ──────────────────────────────────────────────
   await app.register(helmet, {
-    contentSecurityPolicy: process.env.NODE_ENV === 'production',
+    contentSecurityPolicy:
+      process.env.NODE_ENV === 'production'
+        ? {
+            directives: {
+              defaultSrc: [`'self'`],
+              styleSrc: [`'self'`, `'unsafe-inline'`, 'https:'],
+              scriptSrc: [`'self'`],
+              imgSrc: [`'self'`, 'data:', 'https:'],
+              connectSrc: [`'self'`],
+            },
+          }
+        : false, // Disable CSP in development
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false, // Allow cross-origin resource access
     hsts: {
       maxAge: 31536000, // 1 year
       includeSubDomains: true,
