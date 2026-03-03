@@ -231,30 +231,19 @@ async function main() {
       console.log(`Upserted super admin: ${admin.email}`);
     }
 
+    // Delete old webinars with slug-based IDs and recreate with proper UUIDs
+    console.log('Deleting old webinars to recreate with UUIDs...');
     for (const w of seedWebinars) {
       const slug = slugify(w.title);
-      await prisma.webinar.upsert({
+
+      // Delete existing webinar by slug
+      await prisma.webinar.deleteMany({
         where: { slug },
-        update: {
-          title: w.title,
-          description: w.description,
-          image: w.image,
-          videoUrl: w.videoUrl,
-          time: w.time,
-          instructor: w.instructor,
-          instructorBio: w.instructorBio,
-          instructorImage: w.instructorImage,
-          category: w.category,
-          isUpcoming: w.isUpcoming,
-          date: w.date,
-          duration: w.duration,
-          sectionOneTitle: w.sectionOneTitle,
-          sectionOnePoints: w.sectionOnePoints,
-          sectionTwoTitle: w.sectionTwoTitle,
-          sectionTwoPoints: w.sectionTwoPoints,
-          status: w.status,
-        },
-        create: {
+      });
+
+      // Create with fresh UUID
+      await prisma.webinar.create({
+        data: {
           title: w.title,
           slug,
           description: w.description,
@@ -275,9 +264,9 @@ async function main() {
           status: w.status,
         },
       });
-      console.log(`Upserted webinar: ${slug}`);
+      console.log(`Created webinar with UUID: ${slug}`);
     }
-    console.log('All webinars seeded/upserted successfully.');
+    console.log('All webinars seeded with proper UUIDs successfully.');
   } catch (error) {
     console.error('Seeding failed:', error);
     process.exit(1);
