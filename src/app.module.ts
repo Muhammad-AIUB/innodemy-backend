@@ -22,6 +22,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { InstructorsModule } from './modules/instructors/instructors.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { CoursePublicContentModule } from './modules/course-public-content/course-public-content.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
     DashboardModule,
     InstructorsModule,
     CategoriesModule,
+    CoursePublicContentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -338,6 +338,7 @@ model Course {
   payments           Payment[]
   faqs               FAQ[]
   enrollmentRequests EnrollmentRequest[]
+  publicSections     CoursePublicSection[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -611,4 +612,43 @@ model AdminActionLog {
   @@index([entity, entityId])
   @@index([createdAt])
   @@index([action])
+}
+
+//////////////////////////////////////////////////
+// COURSE PUBLIC PAGE CONTENT
+// Dynamic sections for public course detail pages.
+// Each course can have one section per type.
+// The `content` JSON structure varies by type.
+//////////////////////////////////////////////////
+
+enum CoursePublicSectionType {
+  HERO
+  MODULES
+  INSTRUCTORS
+  FEATURES
+  PROJECTS
+  TARGET_AUDIENCE
+  PREREQUISITES
+  FAQ
+  CUSTOM
+}
+
+model CoursePublicSection {
+  id        String                  @id @default(uuid())
+  courseId  String
+  type      CoursePublicSectionType
+  title     String?
+  subtitle  String?
+  order     Int                     @default(0)
+  content   Json                    @default("[]")
+  isVisible Boolean                 @default(true)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, type])
+  @@index([courseId])
+  @@index([order])
 }
