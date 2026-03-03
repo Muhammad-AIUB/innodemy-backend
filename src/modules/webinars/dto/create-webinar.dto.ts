@@ -13,6 +13,7 @@ import {
   IsUrl,
   IsBoolean,
   IsEnum,
+  IsUUID,
 } from 'class-validator';
 import { CourseCategory } from '@prisma/client';
 
@@ -55,6 +56,13 @@ export class CreateWebinarDto {
   @IsString()
   time?: string;
 
+  // Instructor relation (new way - preferred)
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+  @IsOptional()
+  @IsUUID('4', { message: 'instructorId must be a valid UUID' })
+  instructorId?: string;
+
+  // Legacy instructor fields (kept for backward compatibility)
   @ApiProperty({ example: 'Arif Mahmud Sisir' })
   @IsOptional()
   @IsString()

@@ -31,6 +31,11 @@ enum CourseCategory {
   PROGRAMMING
 }
 
+enum InstructorStatus {
+  ACTIVE
+  INACTIVE
+}
+
 enum BlogStatus {
   DRAFT
   PUBLISHED
@@ -155,9 +160,16 @@ model Webinar {
   image            String?
   videoUrl         String?
   time             String?
+  
+  // Legacy fields - kept for backward compatibility
   instructor       String?
   instructorBio    String?
   instructorImage  String?
+  
+  // New instructor relation
+  instructorId     String?
+  instructorRef    Instructor?   @relation(fields: [instructorId], references: [id], onDelete: SetNull)
+  
   category         CourseCategory?
   isUpcoming       Boolean       @default(false)
   duration         Int
@@ -180,6 +192,7 @@ model Webinar {
   @@index([createdAt])
   @@index([status, date])
   @@index([status, isDeleted])
+  @@index([instructorId])
 }
 
 //////////////////////////////////////////////////
@@ -417,18 +430,21 @@ model AssignmentSubmission {
 }
 
 model Instructor {
-  id        String   @id @default(uuid())
+  id        String           @id @default(uuid())
   name      String
   image     String?
   bio       String?
-  isDeleted Boolean  @default(false)
+  status    InstructorStatus @default(ACTIVE)
+  isDeleted Boolean          @default(false)
 
-  courses CourseInstructor[]
+  courses  CourseInstructor[]
+  webinars Webinar[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([isDeleted])
+  @@index([status])
 }
 
 model CourseInstructor {

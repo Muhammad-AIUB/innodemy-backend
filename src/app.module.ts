@@ -20,6 +20,7 @@ import { EnrollmentRequestModule } from './modules/enrollment-requests/enrollmen
 import { WebinarRegistrationModule } from './modules/webinar-registrations/webinar-registration.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { InstructorsModule } from './modules/instructors/instructors.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     WebinarRegistrationModule,
     UploadModule,
     DashboardModule,
+    InstructorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
