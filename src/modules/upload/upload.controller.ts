@@ -32,22 +32,20 @@ export class UploadController {
   @ApiOperation({ summary: 'Upload image file (max 5MB)' })
   async uploadImage(@Req() request: FastifyRequest) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const data = await request.file();
 
       if (!data) {
         throw new BadRequestException('No file uploaded');
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const buffer = await data.toBuffer();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
       const mimetype = data.mimetype;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
       const filename = data.filename;
 
       // Validate file type
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
       if (!this.uploadService.validateImageType(mimetype)) {
         throw new BadRequestException(
           'Invalid file type. Only JPEG, PNG, and WEBP are allowed.',
@@ -55,16 +53,14 @@ export class UploadController {
       }
 
       // Validate file size (5MB max for images)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+
       if (!this.uploadService.validateFileSize(buffer.length, 5)) {
         throw new BadRequestException('File size exceeds 5MB limit');
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const fileUrl = await this.uploadService.saveFile(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         buffer,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
         filename,
         'images',
       );
@@ -73,9 +69,9 @@ export class UploadController {
         success: true,
         data: {
           url: fileUrl,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
           filename,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
           size: buffer.length,
         },
       };
@@ -99,22 +95,20 @@ export class UploadController {
   @ApiOperation({ summary: 'Upload video file (max 100MB)' })
   async uploadVideo(@Req() request: FastifyRequest) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const data = await request.file();
 
       if (!data) {
         throw new BadRequestException('No file uploaded');
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const buffer = await data.toBuffer();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
       const mimetype = data.mimetype;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
       const filename = data.filename;
 
       // Validate file type
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
       if (!this.uploadService.validateVideoType(mimetype)) {
         throw new BadRequestException(
           'Invalid file type. Only MP4, WEBM, and OGG are allowed.',
@@ -122,16 +116,14 @@ export class UploadController {
       }
 
       // Validate file size (100MB max for videos)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+
       if (!this.uploadService.validateFileSize(buffer.length, 100)) {
         throw new BadRequestException('File size exceeds 100MB limit');
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const fileUrl = await this.uploadService.saveFile(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         buffer,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
         filename,
         'videos',
       );
@@ -140,9 +132,9 @@ export class UploadController {
         success: true,
         data: {
           url: fileUrl,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
           filename,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
           size: buffer.length,
         },
       };

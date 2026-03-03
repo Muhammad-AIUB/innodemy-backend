@@ -135,6 +135,55 @@ export class WebinarsRepository {
     });
   }
 
+  /**
+   * Admin query — fetch ALL webinars (DRAFT + PUBLISHED), not deleted.
+   * Returns full Webinar entities for admin operations.
+   */
+  async findAll(params: {
+    skip: number;
+    take: number;
+    search?: string;
+  }): Promise<Webinar[]> {
+    const { skip, take, search } = params;
+
+    const where: Prisma.WebinarWhereInput = {
+      isDeleted: false,
+      ...(search
+        ? {
+            title: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          }
+        : {}),
+    };
+
+    return this.prisma.webinar.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async countAll(search?: string): Promise<number> {
+    const where: Prisma.WebinarWhereInput = {
+      isDeleted: false,
+      ...(search
+        ? {
+            title: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          }
+        : {}),
+    };
+
+    return this.prisma.webinar.count({
+      where,
+    });
+  }
+
   async update(id: string, data: Prisma.WebinarUpdateInput): Promise<Webinar> {
     return this.prisma.webinar.update({
       where: { id },

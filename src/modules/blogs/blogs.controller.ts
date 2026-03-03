@@ -14,7 +14,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AdminAudit, AdminAuditInterceptor } from '../../common/interceptors/admin-audit.interceptor';
+import {
+  AdminAudit,
+  AdminAuditInterceptor,
+} from '../../common/interceptors/admin-audit.interceptor';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { PublishBlogDto } from './dto/publish-blog.dto';

@@ -67,25 +67,19 @@ export class EnrollmentRequestStudentController {
       let fileFilename = '';
       let fileMimetype = '';
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const parts = req.parts();
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       for await (const part of parts) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (part.type === 'file') {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (part.fieldname === 'screenshot') {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             fileBuffer = await part.toBuffer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
             fileFilename = part.filename;
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
             fileMimetype = part.mimetype;
           }
         } else {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          fields[part.fieldname as string] = part.value as string;
+          fields[part.fieldname] = part.value as string;
         }
       }
 
@@ -100,7 +94,7 @@ export class EnrollmentRequestStudentController {
 
       if (fileBuffer) {
         // Validate file type
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
         if (!this.uploadService.validateImageType(fileMimetype)) {
           throw new BadRequestException(
             'Invalid file type. Only JPEG, PNG, and WEBP are allowed.',
@@ -130,7 +124,7 @@ export class EnrollmentRequestStudentController {
       if (fileBuffer) {
         screenshotUrl = await this.uploadService.saveFile(
           fileBuffer,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
           fileFilename,
           'images',
         );

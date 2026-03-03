@@ -48,6 +48,15 @@ type PaginatedWebinarsResponse = {
   };
 };
 
+type PaginatedAdminWebinarsResponse = {
+  data: AdminWebinarResponse[];
+  meta: {
+    page: number;
+    total: number;
+    totalPages: number;
+  };
+};
+
 @Injectable()
 export class WebinarsService {
   private readonly logger = new Logger(WebinarsService.name);
@@ -128,6 +137,45 @@ export class WebinarsService {
       },
       CACHE_ITEM_TTL,
     );
+  }
+
+  /**
+   * Admin listing — returns all webinars (DRAFT + PUBLISHED) with admin fields.
+   * Includes ID, status, timestamps for management operations.
+   */
+  async findAll(
+    query: ListWebinarsQueryDto,
+  ): Promise<PaginatedAdminWebinarsResponse> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const search = query.search?.trim() ?? '';
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.repo.findAll({
+        skip,
+        take: limit,
+        search: search || undefined,
+      }),
+      this.repo.countAll(search || undefined),
+    ]);
+
+    return {
+      data: items.map((item) => this.mapAdminResponse(item)),
+      meta: {
+        page,
+        total,
+        totalPages: total === 0 ? 0 : Math.ceil(total / limit),
+      },
+    };
+  }
+
+  /**
+   * Admin get single webinar by UUID.
+   */
+  async findOne(id: string): Promise<AdminWebinarResponse> {
+    const webinar = await this.ensureExists(id);
+    return this.mapAdminResponse(webinar);
   }
 
   async update(

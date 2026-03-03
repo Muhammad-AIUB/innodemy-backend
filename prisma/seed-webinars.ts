@@ -22,7 +22,6 @@ function slugify(s: string) {
 // using an explicit type ensures each object matches the Prisma model and
 // eliminates the need for "as any" casts.
 interface SeedWebinar {
-  id: string;
   title: string;
   description: string;
   image?: string;
@@ -44,7 +43,6 @@ interface SeedWebinar {
 
 const seedWebinars: SeedWebinar[] = [
   {
-    id: 'higher-studies-abroad-scholarship',
     title: 'Webinar on Higher Studies Abroad with Scholarship',
     description:
       'বিদেশে পড়ার ইচ্ছা সবার থাকলেও সঠিক তথ্যের অভাবে অনেকেই পিছিয়ে পড়েন। তাই আমরা সাজিয়েছি এই বিশেষ সেশন, যেখানে বিশ্বের নামী-দামী বিশ্ববিদ্যালয়ে স্কলারশিপ পাওয়ার সিক্রেট এবং স্কলারশিপ পাওয়ার জন্য একটি শক্তিশালী প্রোফাইল তৈরির আদ্যোপান্ত শেয়ার করা হবে যাতে কোনো দ্বিধা ছাড়াই আপনি আপনার গ্লোবাল ক্যারিয়ারের পথে পা বাড়াতে পারেন',
@@ -80,7 +78,6 @@ const seedWebinars: SeedWebinar[] = [
     status: WebinarStatus.PUBLISHED,
   },
   {
-    id: 'research-paper-writing-and-publication-techniques',
     title: 'Webinar on Research Paper Writing & Publication Techniques',
     category: CourseCategory.PROGRAMMING,
     description:
@@ -114,7 +111,6 @@ const seedWebinars: SeedWebinar[] = [
     status: WebinarStatus.PUBLISHED,
   },
   {
-    id: 'higher-studies-abroad-with-scholarship-for-clinical-and-translational-health-science-background',
     title:
       'Webinar on Higher Studies Abroad with Scholarship for Clinical & Translational Health Science Background',
     category: CourseCategory.PROGRAMMING,
@@ -151,7 +147,6 @@ const seedWebinars: SeedWebinar[] = [
     status: WebinarStatus.PUBLISHED,
   },
   {
-    id: 'from-code-to-intelligence-ai-engineering-career',
     title:
       'Webinar on From Code to Intelligence: Building a Career in AI Engineering',
     category: CourseCategory.PROGRAMMING,
@@ -239,10 +234,9 @@ async function main() {
     for (const w of seedWebinars) {
       const slug = slugify(w.title);
       await prisma.webinar.upsert({
-        where: { id: w.id },
+        where: { slug },
         update: {
           title: w.title,
-          slug,
           description: w.description,
           image: w.image,
           videoUrl: w.videoUrl,
@@ -261,7 +255,6 @@ async function main() {
           status: w.status,
         },
         create: {
-          id: w.id,
           title: w.title,
           slug,
           description: w.description,
@@ -282,7 +275,7 @@ async function main() {
           status: w.status,
         },
       });
-      console.log(`Upserted webinar: ${w.id}`);
+      console.log(`Upserted webinar: ${slug}`);
     }
     console.log('All webinars seeded/upserted successfully.');
   } catch (error) {
